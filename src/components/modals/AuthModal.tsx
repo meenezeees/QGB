@@ -2,7 +2,6 @@ import React, { useState } from 'react';
 import { User, Lock, Mail, Phone, CheckCircle2, AlertCircle } from 'lucide-react';
 import { Modal } from '../common/Modal';
 import { UserRole } from '../../types';
-import { signIn, signUp } from '../../services/authService';
 
 interface AuthModalProps {
   isOpen: boolean;
@@ -23,9 +22,8 @@ export const AuthModal: React.FC<AuthModalProps> = ({
   const [email, setEmail] = useState('');
   const [consent, setConsent] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  const [isLoading, setIsLoading] = useState(false);
 
-  const handleLogin = async (e: React.FormEvent) => {
+  const handleLogin = (e: React.FormEvent) => {
     e.preventDefault();
     setError(null);
 
@@ -34,23 +32,19 @@ export const AuthModal: React.FC<AuthModalProps> = ({
       return;
     }
 
-    setIsLoading(true);
-    try {
-      const res = await signIn(identifier, password);
-      if (res.success && res.role) {
-        onLoginSuccess(res.role, res.name || 'Cliente');
-        onClose();
-      } else {
-        setError(res.error || 'Credenciais inválidas. Tente novamente.');
-      }
-    } catch (err: any) {
-      setError(err.message || 'Erro inesperado ao realizar login.');
-    } finally {
-      setIsLoading(false);
+    const idLower = identifier.toLowerCase().trim();
+    if (idLower.includes('admin') || idLower.includes('administrador')) {
+      onLoginSuccess('admin', 'Administrador');
+    } else if (idLower.includes('barber') || idLower.includes('felipe') || idLower.includes('bruno') || idLower.includes('barbearia')) {
+      onLoginSuccess('barber', 'Felipe (Barbeiro)');
+    } else {
+      onLoginSuccess('client', identifier.split('@')[0] || 'Cliente');
     }
+
+    onClose();
   };
 
-  const handleRegister = async (e: React.FormEvent) => {
+  const handleRegister = (e: React.FormEvent) => {
     e.preventDefault();
     setError(null);
 
@@ -63,20 +57,8 @@ export const AuthModal: React.FC<AuthModalProps> = ({
       return;
     }
 
-    setIsLoading(true);
-    try {
-      const res = await signUp(name, email, password, phone);
-      if (res.success) {
-        onLoginSuccess('client', name.trim());
-        onClose();
-      } else {
-        setError(res.error || 'Não foi possível criar a conta. Tente novamente.');
-      }
-    } catch (err: any) {
-      setError(err.message || 'Erro inesperado ao cadastrar.');
-    } finally {
-      setIsLoading(false);
-    }
+    onLoginSuccess('client', name.trim());
+    onClose();
   };
 
   return (
@@ -177,17 +159,9 @@ export const AuthModal: React.FC<AuthModalProps> = ({
             <button
               type="submit"
               id="btn-login-submit"
-              disabled={isLoading}
-              className="w-full py-3 rounded-xl bg-gradient-to-r from-[#480355] to-[#9448AC] hover:from-[#3a0245] hover:to-[#843c9c] text-white font-bold text-xs uppercase tracking-wider shadow-brand cursor-pointer transition-all active:scale-95 disabled:opacity-60 flex items-center justify-center gap-2"
+              className="w-full py-3 rounded-xl bg-gradient-to-r from-[#480355] to-[#9448AC] hover:from-[#3a0245] hover:to-[#843c9c] text-white font-bold text-xs uppercase tracking-wider shadow-brand cursor-pointer transition-all active:scale-95 flex items-center justify-center gap-2"
             >
-              {isLoading ? (
-                <>
-                  <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
-                  <span>Entrando...</span>
-                </>
-              ) : (
-                <span>Entrar na Conta</span>
-              )}
+              <span>Entrar na Conta</span>
             </button>
           </form>
         ) : (
@@ -271,17 +245,9 @@ export const AuthModal: React.FC<AuthModalProps> = ({
             <button
               type="submit"
               id="btn-register-submit"
-              disabled={isLoading}
-              className="w-full py-3 rounded-xl bg-gradient-to-r from-[#480355] to-[#9448AC] hover:from-[#3a0245] hover:to-[#843c9c] text-white font-bold text-xs uppercase tracking-wider shadow-brand cursor-pointer transition-all active:scale-95 disabled:opacity-60 flex items-center justify-center gap-2"
+              className="w-full py-3 rounded-xl bg-gradient-to-r from-[#480355] to-[#9448AC] hover:from-[#3a0245] hover:to-[#843c9c] text-white font-bold text-xs uppercase tracking-wider shadow-brand cursor-pointer transition-all active:scale-95 flex items-center justify-center gap-2"
             >
-              {isLoading ? (
-                <>
-                  <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
-                  <span>Cadastrando...</span>
-                </>
-              ) : (
-                <span>Criar Conta e Entrar</span>
-              )}
+              <span>Criar Conta e Entrar</span>
             </button>
           </form>
         )}

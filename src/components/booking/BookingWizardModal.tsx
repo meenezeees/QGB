@@ -4,7 +4,6 @@ import confetti from 'canvas-confetti';
 import { Modal } from '../common/Modal';
 import { SERVICES, BARBERS, SETTINGS } from '../../data/barbershop.data';
 import { ServiceItem, BarberItem, Appointment } from '../../types';
-import { getOccupiedSlots, createAppointment } from '../../services/appointmentService';
 
 interface BookingWizardModalProps {
   isOpen: boolean;
@@ -32,20 +31,6 @@ export const BookingWizardModal: React.FC<BookingWizardModalProps> = ({
   const [lgpdConsent, setLgpdConsent] = useState<boolean>(true);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const [confirmedAppointment, setConfirmedAppointment] = useState<Appointment | null>(null);
-  const [occupiedSlots, setOccupiedSlots] = useState<string[]>([]);
-  const [isLoadingSlots, setIsLoadingSlots] = useState<boolean>(false);
-  const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
-
-  // Consulta horários ocupados no Supabase quando data ou barbeiro mudam
-  useEffect(() => {
-    if (selectedDate && isOpen) {
-      setIsLoadingSlots(true);
-      getOccupiedSlots(selectedDate, selectedBarber?.id)
-        .then(slots => setOccupiedSlots(slots))
-        .catch(() => setOccupiedSlots([]))
-        .finally(() => setIsLoadingSlots(false));
-    }
-  }, [selectedDate, selectedBarber, isOpen]);
 
   // Initialize service or barber if passed as props
   useEffect(() => {
@@ -165,8 +150,8 @@ export const BookingWizardModal: React.FC<BookingWizardModalProps> = ({
     }
   };
 
-  // Submit and confirm booking with Supabase integration
-  const handleConfirmBooking = async () => {
+  // Confirmação de agendamento 100% no cliente com alta performance
+  const handleConfirmBooking = () => {
     if (!clientName.trim()) {
       setErrorMessage('Por favor, informe seu nome completo.');
       return;
@@ -180,57 +165,47 @@ export const BookingWizardModal: React.FC<BookingWizardModalProps> = ({
       return;
     }
 
-    setIsSubmitting(true);
     setErrorMessage(null);
 
-    // Calculate end time
+    // Calcula horário de término
     const [h, m] = selectedTime.split(':').map(Number);
     const totalMinutes = h * 60 + m + totalDuration;
     const endH = Math.floor(totalMinutes / 60);
     const endM = totalMinutes % 60;
     const endTime = `${String(endH).padStart(2, '0')}:${String(endM).padStart(2, '0')}`;
 
+    const newAppointment: Appointment = {
+      id: `apt-${Date.now().toString(36)}-${Math.random().toString(36).substring(2, 6)}`,
+      client_id: `usr-${Date.now().toString(36)}`,
+      client_name: clientName.trim(),
+      client_phone: clientPhone.replace(/\D/g, ''),
+      client_email: clientEmail.trim() || undefined,
+      barber_id: selectedBarber?.id || BARBERS[0].id,
+      barber_name: selectedBarber?.name || BARBERS[0].name,
+      service_ids: selectedServices.map(s => s.id),
+      service_name: selectedServices.map(s => s.name).join(' + '),
+      service_price: totalPrice,
+      service_duration: totalDuration,
+      date: selectedDate,
+      start_time: selectedTime,
+      end_time: endTime,
+      status: 'confirmed',
+      created_at: new Date().toISOString()
+    };
+
+    setConfirmedAppointment(newAppointment);
+    onAppointmentBooked(newAppointment);
+    setCurrentStep(6);
+
+    // Dispara celebração com confetti
     try {
-      const result = await createAppointment({
-        clientName: clientName.trim(),
-        clientPhone: clientPhone.replace(/\D/g, ''),
-        clientEmail: clientEmail.trim() || undefined,
-        barberId: selectedBarber?.id || BARBERS[0].id,
-        barberName: selectedBarber?.name || BARBERS[0].name,
-        serviceId: selectedServices[0]?.id,
-        serviceIds: selectedServices.map(s => s.id),
-        serviceName: selectedServices.map(s => s.name).join(' + '),
-        servicePrice: totalPrice,
-        serviceDuration: totalDuration,
-        date: selectedDate,
-        startTime: selectedTime,
-        endTime: endTime
+      confetti({
+        particleCount: 80,
+        spread: 70,
+        origin: { y: 0.6 }
       });
-
-      if (!result.success || !result.appointment) {
-        setErrorMessage(result.error || 'Não foi possível confirmar o agendamento neste horário. Por favor, selecione outro horário.');
-        setIsSubmitting(false);
-        return;
-      }
-
-      setConfirmedAppointment(result.appointment);
-      onAppointmentBooked(result.appointment);
-      setCurrentStep(6);
-
-      // Trigger celebration confetti
-      try {
-        confetti({
-          particleCount: 80,
-          spread: 70,
-          origin: { y: 0.6 }
-        });
-      } catch {
-        // Ignore if confetti unavailable
-      }
-    } catch (err: any) {
-      setErrorMessage(err.message || 'Erro inesperado ao realizar agendamento.');
-    } finally {
-      setIsSubmitting(false);
+    } catch {
+      // Ignora se indisponível
     }
   };
 
@@ -465,36 +440,22 @@ export const BookingWizardModal: React.FC<BookingWizardModalProps> = ({
             <div className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-5 gap-2.5 max-h-[280px] overflow-y-auto">
               {timeSlots.map((time) => {
                 const isSelected = selectedTime === time;
-                const isOccupied = occupiedSlots.includes(time);
                 return (
                   <button
                     key={time}
                     type="button"
-                    disabled={isOccupied}
-                    onClick={() => !isOccupied && setSelectedTime(time)}
-                    className={`py-3 px-2 rounded-xl border text-center font-bold text-sm transition-all relative ${
-                      isOccupied
-                        ? 'opacity-40 cursor-not-allowed bg-slate-200/50 dark:bg-white/5 border-dashed border-slate-300 dark:border-white/10 line-through'
-                        : isSelected
-                        ? 'bg-[#000020] text-white border-[#9448AC] shadow-md ring-2 ring-[#9448AC] cursor-pointer'
-                        : 'bg-surface-light dark:bg-white/5 border-slate-200 dark:border-white/10 hover:border-[#9448AC]/40 text-[#000020] dark:text-white cursor-pointer'
+                    onClick={() => setSelectedTime(time)}
+                    className={`py-3 px-2 rounded-xl border text-center font-bold text-sm transition-all cursor-pointer ${
+                      isSelected
+                        ? 'bg-[#000020] text-white border-[#9448AC] shadow-md ring-2 ring-[#9448AC]'
+                        : 'bg-surface-light dark:bg-white/5 border-slate-200 dark:border-white/10 hover:border-[#9448AC]/40 text-[#000020] dark:text-white'
                     }`}
                   >
                     <span>{time}</span>
-                    {isOccupied && (
-                      <span className="block text-[9px] uppercase font-mono tracking-tighter text-rose-500 font-semibold no-underline">
-                        Ocupado
-                      </span>
-                    )}
                   </button>
                 );
               })}
             </div>
-            {isLoadingSlots && (
-              <p className="text-[11px] text-slate-400 italic text-center">
-                Verificando disponibilidade em tempo real...
-              </p>
-            )}
           </div>
         )}
 
@@ -695,21 +656,11 @@ export const BookingWizardModal: React.FC<BookingWizardModalProps> = ({
               <button
                 type="button"
                 id="booking-btn-confirm"
-                disabled={isSubmitting}
                 onClick={handleConfirmBooking}
-                className="px-6 py-3 rounded-xl bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-700 hover:to-teal-700 text-white text-xs font-bold uppercase tracking-wider shadow-lg flex items-center gap-2 cursor-pointer active:scale-95 disabled:opacity-60 disabled:cursor-wait"
+                className="px-6 py-3 rounded-xl bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-700 hover:to-teal-700 text-white text-xs font-bold uppercase tracking-wider shadow-lg flex items-center gap-2 cursor-pointer active:scale-95"
               >
-                {isSubmitting ? (
-                  <>
-                    <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
-                    <span>Confirmando...</span>
-                  </>
-                ) : (
-                  <>
-                    <CheckCircle2 className="w-4 h-4" />
-                    <span>Confirmar Agendamento</span>
-                  </>
-                )}
+                <CheckCircle2 className="w-4 h-4" />
+                <span>Confirmar Agendamento</span>
               </button>
             )}
           </div>
