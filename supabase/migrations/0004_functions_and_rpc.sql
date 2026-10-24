@@ -247,9 +247,10 @@ $$;
 -- ---------------------------------------------------------------------
 -- RPC 3: cancel_appointment
 -- Cancela um agendamento liberando imediatamente o slot de horário.
+-- Aceita tanto o UUID interno quanto o código amigável (ex: QG-A1B2C3).
 -- ---------------------------------------------------------------------
 create or replace function public.cancel_appointment(
-  p_appointment_id uuid,
+  p_appointment_id text,
   p_client_phone   text default null
 )
 returns boolean
@@ -264,7 +265,8 @@ declare
 begin
   select * into v_apt
   from public.appointments
-  where id = p_appointment_id;
+  where id::text = p_appointment_id
+     or code = p_appointment_id;
 
   if not found then
     raise exception 'Agendamento não encontrado.';
@@ -295,7 +297,7 @@ begin
   set status = 'cancelled',
       cancelled_at = now(),
       cancelled_by = auth.uid()
-  where id = p_appointment_id;
+  where id = v_apt.id;
 
   return true;
 end;
