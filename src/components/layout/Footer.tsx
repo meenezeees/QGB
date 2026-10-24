@@ -19,11 +19,11 @@ export const Footer: React.FC<FooterProps> = ({ onOpenAuth }) => {
           {/* Column 1: Brand & About */}
           <div className="space-y-4">
             <div className="flex items-center gap-3">
-              <div className="w-12 h-12 rounded-full overflow-hidden border-2 border-[#9448AC] bg-[#000020] flex items-center justify-center p-0.5">
+              <div className="w-12 h-12 rounded-full overflow-hidden border-2 border-[#9448AC] bg-white flex items-center justify-center p-1 shadow-brand">
                 <img
                   src={SETTINGS.logo_url}
                   alt="Logo QG Barber"
-                  className="w-full h-full object-contain"
+                  className="w-full h-full object-contain scale-110"
                 />
               </div>
               <span className="font-extrabold text-2xl tracking-tight text-white font-display">

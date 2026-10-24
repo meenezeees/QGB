@@ -31,12 +31,12 @@ export const HeroSection: React.FC<HeroSectionProps> = ({ onOpenBooking }) => {
 
           {/* Logo with breathing halo - Scaled for mobile */}
           <div className="relative group">
-            <div className="w-28 h-28 sm:w-36 sm:h-36 md:w-44 md:h-44 rounded-full p-1 bg-gradient-to-br from-[#480355] via-[#9448AC] to-[#000020] shadow-glow flex items-center justify-center transition-transform group-hover:scale-105 duration-300">
-              <div className="w-full h-full rounded-full overflow-hidden bg-[#000020] p-1 flex items-center justify-center">
+            <div className="w-28 h-28 sm:w-36 sm:h-36 md:w-44 md:h-44 rounded-full p-1 bg-gradient-to-br from-[#480355] via-[#9448AC] to-[#480355] shadow-glow flex items-center justify-center transition-transform group-hover:scale-105 duration-300">
+              <div className="w-full h-full rounded-full overflow-hidden bg-white p-2.5 sm:p-3 flex items-center justify-center shadow-sm">
                 <img
                   src={SETTINGS.logo_url}
                   alt={`${SETTINGS.name} Logo`}
-                  className="w-full h-full object-contain select-none"
+                  className="w-full h-full object-contain select-none scale-105"
                   onError={(e) => {
                     e.currentTarget.src = 'https://i.ibb.co/WWwKRd36/Chat-GPT-Image-16-de-ago-de-2026-00-48-51.png';
                   }}

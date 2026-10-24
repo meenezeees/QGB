@@ -98,11 +98,11 @@ export const Navbar: React.FC<NavbarProps> = ({
             id="navbar-brand"
             className="flex items-center gap-3 group cursor-pointer"
           >
-            <div className="w-10 h-10 sm:w-11 sm:h-11 rounded-full overflow-hidden border-2 border-[#9448AC] shadow-brand group-hover:scale-105 transition-transform bg-[#000020] flex items-center justify-center p-0.5">
+            <div className="w-10 h-10 sm:w-11 sm:h-11 rounded-full overflow-hidden border-2 border-[#9448AC] shadow-brand group-hover:scale-105 transition-transform bg-white flex items-center justify-center p-1">
               <img
                 src={SETTINGS.logo_url}
                 alt="QG Barber Logo"
-                className="w-full h-full object-contain"
+                className="w-full h-full object-contain scale-110"
                 onError={(e) => {
                   e.currentTarget.src = 'https://i.ibb.co/WWwKRd36/Chat-GPT-Image-16-de-ago-de-2026-00-48-51.png';
                 }}
