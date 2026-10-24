@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Navbar } from './components/layout/Navbar';
 import { Footer } from './components/layout/Footer';
 import { HeroSection } from './components/sections/HeroSection';
@@ -20,6 +20,8 @@ import { MobileFloatingCTA } from './components/common/MobileFloatingCTA';
 import { CinematicIntro } from './components/common/CinematicIntro';
 import { ServiceItem, BarberItem, ProductItem, Appointment, UserRole } from './types';
 import { SETTINGS, BARBERS, SERVICES } from './data/barbershop.data';
+import { cancelAppointment, fetchMyAppointments, fetchBarberAppointments } from './services/appointmentService';
+import { getCurrentUserProfile, signOut } from './services/authService';
 
 export const App: React.FC = () => {
   // Cinematic Video Intro State (runs on initial site entry)
@@ -145,21 +147,72 @@ export const App: React.FC = () => {
     addToast(`Produto "${product.name}" reservado! Avise seu barbeiro no atendimento.`, 'info');
   };
 
+  // Sincroniza sessão ativa do Supabase ao carregar
+  useEffect(() => {
+    getCurrentUserProfile().then((profile) => {
+      if (profile) {
+        setCurrentRole(profile.role);
+        setCurrentUserName(profile.name);
+        if (profile.role === 'client') {
+          fetchMyAppointments().then((apts) => {
+            if (apts.length > 0) {
+              setAppointments(prev => {
+                const map = new Map();
+                [...apts, ...prev].forEach(a => map.set(a.id, a));
+                return Array.from(map.values());
+              });
+            }
+          });
+        }
+      }
+    });
+  }, []);
+
   const handleAppointmentBooked = (newAppointment: Appointment) => {
     setAppointments(prev => [newAppointment, ...prev]);
     addToast(`Agendamento confirmado para ${newAppointment.date} às ${newAppointment.start_time}!`, 'success');
   };
 
-  const handleCancelAppointment = (id: string) => {
-    setAppointments(prev => prev.filter(a => a.id !== id));
-    addToast('Agendamento cancelado com sucesso.', 'info');
+  const handleCancelAppointment = async (id: string) => {
+    try {
+      const res = await cancelAppointment(id);
+      if (res.success) {
+        setAppointments(prev => prev.filter(a => a.id !== id));
+        addToast('Agendamento cancelado com sucesso no sistema.', 'info');
+      } else {
+        addToast(res.error || 'Erro ao cancelar agendamento no Supabase.', 'error');
+      }
+    } catch {
+      setAppointments(prev => prev.filter(a => a.id !== id));
+      addToast('Agendamento removido da visualização.', 'info');
+    }
   };
 
-  const handleLoginSuccess = (role: UserRole, name: string) => {
+  const handleLoginSuccess = async (role: UserRole, name: string) => {
     setCurrentRole(role);
     setCurrentUserName(name);
     setActiveView(role);
     addToast(`Bem-vindo, ${name}!`, 'success');
+
+    if (role === 'client') {
+      const myApts = await fetchMyAppointments();
+      if (myApts.length > 0) {
+        setAppointments(prev => {
+          const map = new Map();
+          [...myApts, ...prev].forEach(a => map.set(a.id, a));
+          return Array.from(map.values());
+        });
+      }
+    } else if (role === 'barber') {
+      const barberApts = await fetchBarberAppointments('barber-1');
+      if (barberApts.length > 0) {
+        setAppointments(prev => {
+          const map = new Map();
+          [...barberApts, ...prev].forEach(a => map.set(a.id, a));
+          return Array.from(map.values());
+        });
+      }
+    }
   };
 
   return (

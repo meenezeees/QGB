@@ -1,9 +1,10 @@
 import React, { useState, useEffect } from 'react';
-import { Scissors, User, Calendar as CalendarIcon, Clock, CheckCircle2, ChevronRight, ChevronLeft, AlertCircle, Phone, Sparkles, Send } from 'lucide-react';
+import { Scissors, User, Calendar as CalendarIcon, Clock, CheckCircle2, ChevronRight, ChevronLeft, AlertCircle, Phone, Sparkles, Send, Loader2 } from 'lucide-react';
 import confetti from 'canvas-confetti';
 import { Modal } from '../common/Modal';
 import { SERVICES, BARBERS, SETTINGS } from '../../data/barbershop.data';
 import { ServiceItem, BarberItem, Appointment } from '../../types';
+import { getOccupiedSlots, createAppointment } from '../../services/appointmentService';
 
 interface BookingWizardModalProps {
   isOpen: boolean;
@@ -31,6 +32,9 @@ export const BookingWizardModal: React.FC<BookingWizardModalProps> = ({
   const [lgpdConsent, setLgpdConsent] = useState<boolean>(true);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const [confirmedAppointment, setConfirmedAppointment] = useState<Appointment | null>(null);
+  const [occupiedSlots, setOccupiedSlots] = useState<string[]>([]);
+  const [isLoadingSlots, setIsLoadingSlots] = useState<boolean>(false);
+  const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
 
   // Initialize service or barber if passed as props
   useEffect(() => {
@@ -107,6 +111,26 @@ export const BookingWizardModal: React.FC<BookingWizardModalProps> = ({
     }
   }, [availableDates, selectedDate]);
 
+  // Carrega horários ocupados dinamicamente do Supabase para o barbeiro e data escolhidos
+  useEffect(() => {
+    if (selectedDate && selectedBarber && (currentStep === 4 || currentStep === 3)) {
+      setIsLoadingSlots(true);
+      getOccupiedSlots(selectedDate, selectedBarber.id)
+        .then((busy) => {
+          setOccupiedSlots(busy);
+          if (selectedTime && busy.includes(selectedTime)) {
+            setSelectedTime('');
+          }
+        })
+        .catch(() => {
+          setOccupiedSlots([]);
+        })
+        .finally(() => {
+          setIsLoadingSlots(false);
+        });
+    }
+  }, [selectedDate, selectedBarber, currentStep]);
+
   // Generate time slots (08:30 to 18:30 in 30-min increments)
   const timeSlots = [
     '08:30', '09:00', '09:30', '10:00', '10:30', '11:00', '11:30',
@@ -150,8 +174,8 @@ export const BookingWizardModal: React.FC<BookingWizardModalProps> = ({
     }
   };
 
-  // Confirmação de agendamento 100% no cliente com alta performance
-  const handleConfirmBooking = () => {
+  // Confirmação de agendamento conectada ao Supabase com RPC atômica e proteção contra conflitos
+  const handleConfirmBooking = async () => {
     if (!clientName.trim()) {
       setErrorMessage('Por favor, informe seu nome completo.');
       return;
@@ -166,46 +190,58 @@ export const BookingWizardModal: React.FC<BookingWizardModalProps> = ({
     }
 
     setErrorMessage(null);
+    setIsSubmitting(true);
 
-    // Calcula horário de término
+    // Calcula horário de término estimado
     const [h, m] = selectedTime.split(':').map(Number);
     const totalMinutes = h * 60 + m + totalDuration;
     const endH = Math.floor(totalMinutes / 60);
     const endM = totalMinutes % 60;
     const endTime = `${String(endH).padStart(2, '0')}:${String(endM).padStart(2, '0')}`;
 
-    const newAppointment: Appointment = {
-      id: `apt-${Date.now().toString(36)}-${Math.random().toString(36).substring(2, 6)}`,
-      client_id: `usr-${Date.now().toString(36)}`,
-      client_name: clientName.trim(),
-      client_phone: clientPhone.replace(/\D/g, ''),
-      client_email: clientEmail.trim() || undefined,
-      barber_id: selectedBarber?.id || BARBERS[0].id,
-      barber_name: selectedBarber?.name || BARBERS[0].name,
-      service_ids: selectedServices.map(s => s.id),
-      service_name: selectedServices.map(s => s.name).join(' + '),
-      service_price: totalPrice,
-      service_duration: totalDuration,
-      date: selectedDate,
-      start_time: selectedTime,
-      end_time: endTime,
-      status: 'confirmed',
-      created_at: new Date().toISOString()
-    };
-
-    setConfirmedAppointment(newAppointment);
-    onAppointmentBooked(newAppointment);
-    setCurrentStep(6);
-
-    // Dispara celebração com confetti
     try {
-      confetti({
-        particleCount: 80,
-        spread: 70,
-        origin: { y: 0.6 }
+      const res = await createAppointment({
+        clientName: clientName.trim(),
+        clientPhone: clientPhone.replace(/\D/g, ''),
+        clientEmail: clientEmail.trim() || undefined,
+        barberId: selectedBarber?.id || BARBERS[0].id,
+        barberName: selectedBarber?.name || BARBERS[0].name,
+        serviceIds: selectedServices.map(s => s.id),
+        serviceName: selectedServices.map(s => s.name).join(' + '),
+        servicePrice: totalPrice,
+        serviceDuration: totalDuration,
+        date: selectedDate,
+        startTime: selectedTime,
+        endTime
       });
-    } catch {
-      // Ignora se indisponível
+
+      if (!res.success || !res.appointment) {
+        setErrorMessage(res.error || 'Esse horário não está mais disponível. Por favor, selecione outro horário.');
+        // Atualiza os horários ocupados
+        if (selectedDate && selectedBarber) {
+          getOccupiedSlots(selectedDate, selectedBarber.id).then(setOccupiedSlots);
+        }
+        return;
+      }
+
+      setConfirmedAppointment(res.appointment);
+      onAppointmentBooked(res.appointment);
+      setCurrentStep(6);
+
+      // Dispara celebração com confetti
+      try {
+        confetti({
+          particleCount: 80,
+          spread: 70,
+          origin: { y: 0.6 }
+        });
+      } catch {
+        // Ignora se indisponível
+      }
+    } catch (err: any) {
+      setErrorMessage(err?.message || 'Erro inesperado ao registrar agendamento no Supabase.');
+    } finally {
+      setIsSubmitting(false);
     }
   };
 
@@ -428,18 +464,41 @@ export const BookingWizardModal: React.FC<BookingWizardModalProps> = ({
         {/* STEP 4: Escolher Horário */}
         {currentStep === 4 && (
           <div className="space-y-4">
-            <div>
-              <h4 className="text-xs font-bold uppercase tracking-wider text-[#9448AC] font-mono">
-                04. Escolha o Horário
-              </h4>
-              <p className="text-xs text-[#45454C] dark:text-slate-400">
-                Horários disponíveis para {selectedBarber?.name} na data selecionada:
-              </p>
+            <div className="flex items-center justify-between">
+              <div>
+                <h4 className="text-xs font-bold uppercase tracking-wider text-[#9448AC] font-mono">
+                  04. Escolha o Horário
+                </h4>
+                <p className="text-xs text-[#45454C] dark:text-slate-400">
+                  Horários para {selectedBarber?.name} na data {selectedDate}:
+                </p>
+              </div>
+              {isLoadingSlots && (
+                <div className="flex items-center gap-1.5 text-xs text-[#9448AC] font-semibold animate-pulse">
+                  <Loader2 className="w-3.5 h-3.5 animate-spin" />
+                  <span>Checando agenda...</span>
+                </div>
+              )}
             </div>
 
             <div className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-5 gap-2.5 max-h-[280px] overflow-y-auto">
               {timeSlots.map((time) => {
                 const isSelected = selectedTime === time;
+                const isOccupied = occupiedSlots.includes(time);
+
+                if (isOccupied) {
+                  return (
+                    <div
+                      key={time}
+                      title="Horário já reservado por outro cliente"
+                      className="py-2.5 px-2 rounded-xl border border-slate-200/50 dark:border-white/5 bg-slate-100/50 dark:bg-white/[0.02] text-slate-400 dark:text-slate-600 text-center font-bold text-xs flex flex-col items-center justify-center cursor-not-allowed select-none opacity-60"
+                    >
+                      <span className="line-through">{time}</span>
+                      <span className="text-[9px] uppercase tracking-wider font-semibold text-rose-500/80">Ocupado</span>
+                    </div>
+                  );
+                }
+
                 return (
                   <button
                     key={time}
@@ -656,11 +715,21 @@ export const BookingWizardModal: React.FC<BookingWizardModalProps> = ({
               <button
                 type="button"
                 id="booking-btn-confirm"
+                disabled={isSubmitting}
                 onClick={handleConfirmBooking}
-                className="px-6 py-3 rounded-xl bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-700 hover:to-teal-700 text-white text-xs font-bold uppercase tracking-wider shadow-lg flex items-center gap-2 cursor-pointer active:scale-95"
+                className="px-6 py-3 rounded-xl bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-700 hover:to-teal-700 text-white text-xs font-bold uppercase tracking-wider shadow-lg flex items-center gap-2 cursor-pointer active:scale-95 disabled:opacity-50"
               >
-                <CheckCircle2 className="w-4 h-4" />
-                <span>Confirmar Agendamento</span>
+                {isSubmitting ? (
+                  <>
+                    <Loader2 className="w-4 h-4 animate-spin" />
+                    <span>Confirmando no Banco...</span>
+                  </>
+                ) : (
+                  <>
+                    <CheckCircle2 className="w-4 h-4" />
+                    <span>Confirmar Agendamento</span>
+                  </>
+                )}
               </button>
             )}
           </div>
