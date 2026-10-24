@@ -20,6 +20,8 @@ import { MobileFloatingCTA } from './components/common/MobileFloatingCTA';
 import { CinematicIntro } from './components/common/CinematicIntro';
 import { ServiceItem, BarberItem, ProductItem, Appointment, UserRole } from './types';
 import { SETTINGS, BARBERS, SERVICES } from './data/barbershop.data';
+import { cancelAppointment } from './services/appointmentService';
+import { supabase, isSupabaseConfigured } from './lib/supabase';
 
 export const App: React.FC = () => {
   // Cinematic Video Intro State (runs on initial site entry)
@@ -150,8 +152,9 @@ export const App: React.FC = () => {
     addToast(`Agendamento confirmado para ${newAppointment.date} às ${newAppointment.start_time}!`, 'success');
   };
 
-  const handleCancelAppointment = (id: string) => {
+  const handleCancelAppointment = async (id: string) => {
     setAppointments(prev => prev.filter(a => a.id !== id));
+    await cancelAppointment(id);
     addToast('Agendamento cancelado com sucesso.', 'info');
   };
 
