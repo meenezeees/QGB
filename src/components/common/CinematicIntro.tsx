@@ -8,7 +8,7 @@ interface CinematicIntroProps {
 
 export const CinematicIntro: React.FC<CinematicIntroProps> = ({
   onComplete,
-  videoSrc = '/IntroductionVideo.mp4'
+  videoSrc = `${import.meta.env.BASE_URL}IntroductionVideo.mp4`
 }) => {
   const [stage, setStage] = useState<'playing' | 'blackout' | 'curtain-rising' | 'completed'>('playing');
   const [autoplayBlocked, setAutoplayBlocked] = useState(false);

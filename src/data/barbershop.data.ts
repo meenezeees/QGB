@@ -2,7 +2,7 @@ import { ServiceItem, BarberItem, ProductItem, MonthlyPlanBenefit, BarbershopSet
 
 export const SETTINGS: BarbershopSettings = {
   name: 'QG Barber',
-  logo_url: '/QG Barber - Images/logo.jpeg',
+  logo_url: './QG Barber - Images/logo.jpeg',
   description: 'Corte, barba e estilo com precisão. A QG Barber é o seu espaço para renovar o visual com atendimento de qualidade e ambiente pensado pra você.',
   address: 'Rua Orlando Tarquinio, 129 - Sacomã, São Paulo - SP, 04296-110',
   whatsapp: '5511978334717',
@@ -31,7 +31,7 @@ export const SERVICES: ServiceItem[] = [
     duration: 60,
     category: 'Combos Promocionais',
     description: 'A experiência completa: corte de cabelo detalhado com alinhamento e modelagem de barba na navalha.',
-    image_url: '/QG Barber - Images/Servicos/image (1).jpeg',
+    image_url: './QG Barber - Images/Servicos/image (1).jpeg',
     popular: true,
     active: true
   },
@@ -42,7 +42,7 @@ export const SERVICES: ServiceItem[] = [
     duration: 30,
     category: 'Combos Promocionais',
     description: 'Corte moderno ou clássico acompanhado de desenho e limpeza precisa das sobrancelhas.',
-    image_url: '/QG Barber - Images/Servicos/image (2).jpeg',
+    image_url: './QG Barber - Images/Servicos/image (2).jpeg',
     popular: true,
     active: true
   },
@@ -53,7 +53,7 @@ export const SERVICES: ServiceItem[] = [
     duration: 30,
     category: 'Cortes Tradicionais',
     description: 'Corte tesoura ou máquina (degradê, fade, social, undercut) com acabamento impecável de pezinho.',
-    image_url: '/QG Barber - Images/Servicos/image (3).jpeg',
+    image_url: './QG Barber - Images/Servicos/image (3).jpeg',
     popular: true,
     active: true
   },
@@ -64,7 +64,7 @@ export const SERVICES: ServiceItem[] = [
     duration: 30,
     category: 'Barboterapia',
     description: 'Barboterapia com toalha quente, navalha descartável, óleos emolientes e loção pós-barba refrescante.',
-    image_url: '/QG Barber - Images/Servicos/image (8).jpeg',
+    image_url: './QG Barber - Images/Servicos/image (8).jpeg',
     popular: true,
     active: true
   },
@@ -75,7 +75,7 @@ export const SERVICES: ServiceItem[] = [
     duration: 70,
     category: 'Química & Coloração',
     description: 'Descoloração global com proteção do couro cabeludo e matização platinada perfeita.',
-    image_url: '/QG Barber - Images/Servicos/image (5).jpeg',
+    image_url: './QG Barber - Images/Servicos/image (5).jpeg',
     popular: true,
     active: true
   },
@@ -86,7 +86,7 @@ export const SERVICES: ServiceItem[] = [
     duration: 60,
     category: 'Química & Coloração',
     description: 'Redução de volume e alinhamento dos fios com aspecto natural, brilho e maleabilidade.',
-    image_url: '/QG Barber - Images/Servicos/image (12).jpeg',
+    image_url: './QG Barber - Images/Servicos/image (12).jpeg',
     popular: false,
     active: true
   },
@@ -97,7 +97,7 @@ export const SERVICES: ServiceItem[] = [
     duration: 60,
     category: 'Química & Coloração',
     description: 'Mechas na touca ou papel com tonalização personalizada para um visual iluminado e marcante.',
-    image_url: '/QG Barber - Images/Servicos/image (6).jpeg',
+    image_url: './QG Barber - Images/Servicos/image (6).jpeg',
     popular: false,
     active: true
   },
@@ -108,7 +108,7 @@ export const SERVICES: ServiceItem[] = [
     duration: 50,
     category: 'Tratamentos',
     description: 'Reposição de massa capilar, eliminação de frizz e selagem profunda das cutículas.',
-    image_url: '/QG Barber - Images/Servicos/image (14).jpeg',
+    image_url: './QG Barber - Images/Servicos/image (14).jpeg',
     popular: false,
     active: true
   },
@@ -119,7 +119,7 @@ export const SERVICES: ServiceItem[] = [
     duration: 20,
     category: 'Tratamentos',
     description: 'Tratamento intensivo com máscara nutritiva para devolver maciez, força e vida aos cabelos.',
-    image_url: '/QG Barber - Images/Servicos/image (13).jpeg',
+    image_url: './QG Barber - Images/Servicos/image (13).jpeg',
     popular: false,
     active: true
   },
@@ -130,7 +130,7 @@ export const SERVICES: ServiceItem[] = [
     duration: 20,
     category: 'Acabamentos & Estilo',
     description: 'Preenchimento e disfarce óptico de falhas na barba ou cabelo com tinta especial hipoalergênica.',
-    image_url: '/QG Barber - Images/Servicos/image (15).jpeg',
+    image_url: './QG Barber - Images/Servicos/image (15).jpeg',
     popular: false,
     active: true
   },
@@ -141,7 +141,7 @@ export const SERVICES: ServiceItem[] = [
     duration: 20,
     category: 'Acabamentos & Estilo',
     description: 'Lavagem, secagem e finalização com pomadas ou fixadores de alta performance (efeito matte ou brilho).',
-    image_url: '/QG Barber - Images/Servicos/image (11).jpeg',
+    image_url: './QG Barber - Images/Servicos/image (11).jpeg',
     popular: false,
     active: true
   },
@@ -152,7 +152,7 @@ export const SERVICES: ServiceItem[] = [
     duration: 10,
     category: 'Barboterapia',
     description: 'Desenho e alinhamento preciso do cavanhaque com toalha morna e navalha esterilizada.',
-    image_url: '/QG Barber - Images/Servicos/image (9).jpeg',
+    image_url: './QG Barber - Images/Servicos/image (9).jpeg',
     popular: false,
     active: true
   },
@@ -163,7 +163,7 @@ export const SERVICES: ServiceItem[] = [
     duration: 10,
     category: 'Acabamentos & Estilo',
     description: 'Linhas, riscos, traços geométricos e arte navalhada personalizada nas laterais.',
-    image_url: '/QG Barber - Images/Servicos/image (4).jpeg',
+    image_url: './QG Barber - Images/Servicos/image (4).jpeg',
     popular: false,
     active: true
   },
@@ -174,7 +174,7 @@ export const SERVICES: ServiceItem[] = [
     duration: 10,
     category: 'Acabamentos & Estilo',
     description: 'Limpeza, alinhamento e desenho do arco da sobrancelha na navalha com precisão cirúrgica.',
-    image_url: '/QG Barber - Images/Servicos/image (7).jpeg',
+    image_url: './QG Barber - Images/Servicos/image (7).jpeg',
     popular: false,
     active: true
   },
@@ -185,7 +185,7 @@ export const SERVICES: ServiceItem[] = [
     duration: 5,
     category: 'Barboterapia',
     description: 'Aparo, alinhamento e limpeza do bigode mantendo o contorno perfeito.',
-    image_url: '/QG Barber - Images/Servicos/image (10).jpeg',
+    image_url: './QG Barber - Images/Servicos/image (10).jpeg',
     popular: false,
     active: true
   }
@@ -199,7 +199,7 @@ export const BARBERS: BarberItem[] = [
     email: 'fefemarquessp@gmail.com',
     specialty: 'Degradê na régua, químicas, nevou & barba clássica',
     bio: 'Mais de 8 anos de experiência em cortes masculinos, especialista em transformações, visagismo e atendimento de alto padrão.',
-    photo_url: '/QG Barber - Images/Equipe/image (16).jpeg',
+    photo_url: './QG Barber - Images/Equipe/image (16).jpeg',
     active: true,
     service_ids: [
       'srv-1788658109981-0tfn', 'srv-1788889406018-vypb', 'srv-1', 'srv-1787276844471-23y1',
@@ -215,7 +215,7 @@ export const BARBERS: BarberItem[] = [
     email: 'bruxx11102000@gmail.com',
     specialty: 'Cortes modernos, freestyle, barba terapia & acabamentos finos',
     bio: 'Técnica apurada em tesoura e máquina, foco em precisão, pontualidade rigorosa e atendimento consultivo.',
-    photo_url: '/QG Barber - Images/Equipe/image (17).jpeg',
+    photo_url: './QG Barber - Images/Equipe/image (17).jpeg',
     active: true,
     service_ids: [
       'srv-1788658109981-0tfn', 'srv-1788889406018-vypb', 'srv-1', 'srv-1787276844471-23y1',
@@ -234,7 +234,7 @@ export const PRODUCTS: ProductItem[] = [
     description: 'Higienização profunda dos fios e couro cabeludo sem ressecar. Ação mentolada refrescante (300ml).',
     category: 'Cabelo',
     suggestedPrice: 35.00,
-    image_url: '/QG Barber - Images/Produtos/image (29).jpeg'
+    image_url: './QG Barber - Images/Produtos/image (29).jpeg'
   },
   {
     id: 'gal-1788382066315-5k04',
@@ -243,7 +243,7 @@ export const PRODUCTS: ProductItem[] = [
     description: 'Nutrição diária, desembaraço imediato e toque aveludado para cabelos masculinos (300ml).',
     category: 'Cabelo',
     suggestedPrice: 35.00,
-    image_url: '/QG Barber - Images/Produtos/image (30).jpeg'
+    image_url: './QG Barber - Images/Produtos/image (30).jpeg'
   },
   {
     id: 'gal-1788382245354-dihf',
@@ -252,7 +252,7 @@ export const PRODUCTS: ProductItem[] = [
     description: 'Tônico fortificante para estímulo de crescimento capilar e preenchimento de falhas na barba (120ml).',
     category: 'Tratamentos',
     suggestedPrice: 49.00,
-    image_url: '/QG Barber - Images/Produtos/image (31).jpeg'
+    image_url: './QG Barber - Images/Produtos/image (31).jpeg'
   },
   {
     id: 'gal-1788382473107-lg8i',
@@ -261,7 +261,7 @@ export const PRODUCTS: ProductItem[] = [
     description: 'Fixação forte com pigmento preto suave que disfarça fios brancos e realça cortes escuros (70g).',
     category: 'Finalizadores',
     suggestedPrice: 32.00,
-    image_url: '/QG Barber - Images/Produtos/image (32).jpeg'
+    image_url: './QG Barber - Images/Produtos/image (32).jpeg'
   },
   {
     id: 'gal-1788382629511-cg79',
@@ -270,7 +270,7 @@ export const PRODUCTS: ProductItem[] = [
     description: 'Máxima fixação com efeito matte (seco e fosco), ideal para penteados topete e estruturados (70g).',
     category: 'Finalizadores',
     suggestedPrice: 30.00,
-    image_url: '/QG Barber - Images/Produtos/image (33).jpeg'
+    image_url: './QG Barber - Images/Produtos/image (33).jpeg'
   },
   {
     id: 'gal-1788382672898-lv02',
@@ -279,7 +279,7 @@ export const PRODUCTS: ProductItem[] = [
     description: 'Fixação média com leve brilho natural, fragrância amadeirada marcante e fácil remoção na água (70g).',
     category: 'Finalizadores',
     suggestedPrice: 30.00,
-    image_url: '/QG Barber - Images/Produtos/image (34).jpeg'
+    image_url: './QG Barber - Images/Produtos/image (34).jpeg'
   }
 ];
 
@@ -317,22 +317,22 @@ export const MONTHLY_PLAN_BENEFITS: MonthlyPlanBenefit[] = [
 
 // 11 Fotos reais de resultados e transformações da galeria da barbearia
 export const GALLERY_ITEMS: GalleryItem[] = [
-  { id: 'gal-18', title: 'Degradê Navalhado com Pezinho Alinhado', tag: 'Corte & Fade', img: '/QG Barber - Images/Resultados/image (18).jpeg' },
-  { id: 'gal-19', title: 'Corte Texturizado com Fade na Nuca', tag: 'Textura & Fade', img: '/QG Barber - Images/Resultados/image (19).jpeg' },
-  { id: 'gal-20', title: 'Freestyle Tribal Artístico Lateral', tag: 'Arte & Freestyle', img: '/QG Barber - Images/Resultados/image (20).jpeg' },
-  { id: 'gal-21', title: 'Taper Fade com Cabelo Afro/Cacheado', tag: 'Afro & Cacheado', img: '/QG Barber - Images/Resultados/image (21).jpeg' },
-  { id: 'gal-22', title: 'Nevou / Platinado Global Impecável', tag: 'Química & Cor', img: '/QG Barber - Images/Resultados/image (22).jpeg' },
-  { id: 'gal-23', title: 'Barboterapia com Alinhamento na Navalha', tag: 'Barba & Terapia', img: '/QG Barber - Images/Resultados/image (23).jpeg' },
-  { id: 'gal-24', title: 'Fade Militar Limpo com Acabamento Fino', tag: 'Corte Tradicional', img: '/QG Barber - Images/Resultados/image (24).jpeg' },
-  { id: 'gal-25', title: 'Luzes e Mechas em Fios Ondulados', tag: 'Mechas & Luzes', img: '/QG Barber - Images/Resultados/image (25).jpeg' },
-  { id: 'gal-26', title: 'Penteado Pompadour com Fade Suave', tag: 'Penteados', img: '/QG Barber - Images/Resultados/image (26).jpeg' },
-  { id: 'gal-27', title: 'Corte Social Moderno com Barba Cheia', tag: 'Combo Visual', img: '/QG Barber - Images/Resultados/image (27).jpeg' },
-  { id: 'gal-28', title: 'Freestyle Geométrico com Pigmentação', tag: 'Arte & Pigmentação', img: '/QG Barber - Images/Resultados/image (28).jpeg' }
+  { id: 'gal-18', title: 'Degradê Navalhado com Pezinho Alinhado', tag: 'Corte & Fade', img: './QG Barber - Images/Resultados/image (18).jpeg' },
+  { id: 'gal-19', title: 'Corte Texturizado com Fade na Nuca', tag: 'Textura & Fade', img: './QG Barber - Images/Resultados/image (19).jpeg' },
+  { id: 'gal-20', title: 'Freestyle Tribal Artístico Lateral', tag: 'Arte & Freestyle', img: './QG Barber - Images/Resultados/image (20).jpeg' },
+  { id: 'gal-21', title: 'Taper Fade com Cabelo Afro/Cacheado', tag: 'Afro & Cacheado', img: './QG Barber - Images/Resultados/image (21).jpeg' },
+  { id: 'gal-22', title: 'Nevou / Platinado Global Impecável', tag: 'Química & Cor', img: './QG Barber - Images/Resultados/image (22).jpeg' },
+  { id: 'gal-23', title: 'Barboterapia com Alinhamento na Navalha', tag: 'Barba & Terapia', img: './QG Barber - Images/Resultados/image (23).jpeg' },
+  { id: 'gal-24', title: 'Fade Militar Limpo com Acabamento Fino', tag: 'Corte Tradicional', img: './QG Barber - Images/Resultados/image (24).jpeg' },
+  { id: 'gal-25', title: 'Luzes e Mechas em Fios Ondulados', tag: 'Mechas & Luzes', img: './QG Barber - Images/Resultados/image (25).jpeg' },
+  { id: 'gal-26', title: 'Penteado Pompadour com Fade Suave', tag: 'Penteados', img: './QG Barber - Images/Resultados/image (26).jpeg' },
+  { id: 'gal-27', title: 'Corte Social Moderno com Barba Cheia', tag: 'Combo Visual', img: './QG Barber - Images/Resultados/image (27).jpeg' },
+  { id: 'gal-28', title: 'Freestyle Geométrico com Pigmentação', tag: 'Arte & Pigmentação', img: './QG Barber - Images/Resultados/image (28).jpeg' }
 ];
 
 // 3 Fotos reais do espaço físico da barbearia
 export const ENVIRONMENT_ITEMS: EnvironmentItem[] = [
-  { id: 'env-35', title: 'Fachada & Recepção', description: 'Entrada moderna e acolhedora na Rua Orlando Tarquinio, 129', img: '/QG Barber - Images/Contato/image (35).jpeg' },
-  { id: 'env-36', title: 'Bancadas Profissionais', description: 'Espelhos amplos, capas limpas, iluminação planejada e higiene rigorosa', img: '/QG Barber - Images/Contato/image (36).jpeg' },
-  { id: 'env-37', title: 'Estações de Barboterapia', description: 'Poltronas reclináveis de alta ergonomia e conforto com toalhas quentes', img: '/QG Barber - Images/Contato/image (37).jpeg' }
+  { id: 'env-35', title: 'Fachada & Recepção', description: 'Entrada moderna e acolhedora na Rua Orlando Tarquinio, 129', img: './QG Barber - Images/Contato/image (35).jpeg' },
+  { id: 'env-36', title: 'Bancadas Profissionais', description: 'Espelhos amplos, capas limpas, iluminação planejada e higiene rigorosa', img: './QG Barber - Images/Contato/image (36).jpeg' },
+  { id: 'env-37', title: 'Estações de Barboterapia', description: 'Poltronas reclináveis de alta ergonomia e conforto com toalhas quentes', img: './QG Barber - Images/Contato/image (37).jpeg' }
 ];
