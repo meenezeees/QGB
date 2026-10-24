@@ -1,5 +1,6 @@
 import { supabase, isSupabaseConfigured } from '../lib/supabase';
 import { Appointment } from '../types';
+import { sendAppointmentToN8n } from './n8nService';
 
 export interface CreateAppointmentInput {
   clientName: string;
@@ -114,12 +115,15 @@ export async function createAppointment(
         if (!rpcData.success) {
           return { success: false, error: rpcData.message || 'Horário já reservado.' };
         }
+        const finalAppointment: Appointment = {
+          ...fallbackAppointment,
+          id: rpcData.id || fallbackAppointment.id
+        };
+        // Dispara notificação assíncrona para o n8n
+        sendAppointmentToN8n(finalAppointment, 'appointment_created').catch(() => {});
         return {
           success: true,
-          appointment: {
-            ...fallbackAppointment,
-            id: rpcData.id || fallbackAppointment.id
-          }
+          appointment: finalAppointment
         };
       }
     }
@@ -163,19 +167,22 @@ export async function createAppointment(
       }
 
       console.warn('Erro ao inserir no Supabase, mantendo confirmação com fallback:', error);
-      // Se for erro de permissão ou tabela em configuração, confirma localmente para não frustrar o usuário
+      sendAppointmentToN8n(fallbackAppointment, 'appointment_created').catch(() => {});
       return { success: true, appointment: fallbackAppointment };
     }
 
+    const finalAppointment: Appointment = {
+      ...fallbackAppointment,
+      id: data?.id || fallbackAppointment.id
+    };
+    sendAppointmentToN8n(finalAppointment, 'appointment_created').catch(() => {});
     return {
       success: true,
-      appointment: {
-        ...fallbackAppointment,
-        id: data?.id || fallbackAppointment.id
-      }
+      appointment: finalAppointment
     };
   } catch (err: any) {
     console.error('Exceção ao criar agendamento:', err);
+    sendAppointmentToN8n(fallbackAppointment, 'appointment_created').catch(() => {});
     return { success: true, appointment: fallbackAppointment };
   }
 }
@@ -203,6 +210,7 @@ export async function cancelAppointment(appointmentId: string): Promise<{ succes
       return { success: false, error: error.message };
     }
 
+    sendAppointmentToN8n({ id: appointmentId, status: 'cancelled' } as any, 'appointment_cancelled').catch(() => {});
     return { success: true };
   } catch (err: any) {
     return { success: false, error: err.message || 'Erro ao cancelar' };

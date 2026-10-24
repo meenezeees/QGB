@@ -1,8 +1,14 @@
 -- ====================================================================
 -- QG BARBER — MIGRAÇÃO 04: RPC ATÔMICA E INTEGRAÇÃO N8N (WEBHOOKS)
 -- ====================================================================
+-- Production n8n Webhook URL: https://athrmnzs.app.n8n.cloud/webhook/agendamento
+-- Supabase Project: https://ctmedwnrjeistkgiualv.supabase.co
+-- ====================================================================
 
--- 1. FUNÇÃO ATÔMICA DE AGENDAMENTO (PREVENÇÃO DE CONFLITO EM NÍVEL DE BANCO)
+-- 1. Habilitar extensão pg_net para chamadas HTTP assíncronas do PostgreSQL
+CREATE EXTENSION IF NOT EXISTS "pg_net" WITH SCHEMA extensions;
+
+-- 2. FUNÇÃO ATÔMICA DE AGENDAMENTO (PREVENÇÃO DE CONFLITO EM NÍVEL DE BANCO)
 -- Esta função pode ser chamada diretamente pelo cliente frontend (via supabase.rpc)
 -- ou pelo n8n, garantindo transação serializada atômica.
 CREATE OR REPLACE FUNCTION public.book_appointment_atomic(
@@ -142,25 +148,88 @@ $$;
 GRANT EXECUTE ON FUNCTION public.book_appointment_atomic TO anon, authenticated;
 
 -- ====================================================================
--- 2. GUIA DO WEBHOOK DO N8N (DATABASE WEBHOOKS NO SUPABASE)
+-- 3. DISPARADOR AUTOMÁTICO DE WEBHOOK PARA O N8N (VIA PG_NET)
 -- ====================================================================
--- Para integrar com o n8n e enviar mensagens de confirmação automática no WhatsApp:
+-- Sempre que um agendamento for criado ou atualizado no Supabase,
+-- esta função envia automaticamente um POST HTTP assíncrono para o n8n.
+CREATE OR REPLACE FUNCTION public.notify_n8n_on_appointment()
+RETURNS TRIGGER AS $$
+DECLARE
+  v_payload JSONB;
+BEGIN
+  -- Monta o payload estruturado com todas as informações necessárias
+  v_payload := jsonb_build_object(
+    'event', CASE 
+      WHEN TG_OP = 'INSERT' THEN 'appointment_created'
+      WHEN TG_OP = 'UPDATE' AND NEW.status = 'cancelled' THEN 'appointment_cancelled'
+      ELSE 'appointment_updated'
+    END,
+    'operation', TG_OP,
+    'appointment_id', NEW.id,
+    'client_id', NEW.user_id,
+    'customer_name', NEW.customer_name,
+    'customer_phone', NEW.customer_phone,
+    'customer_email', NEW.customer_email,
+    'professional_id', NEW.professional_id,
+    'professional_name', NEW.professional_name,
+    'service_id', NEW.service_id,
+    'service_name', NEW.service_name,
+    'service_price', (COALESCE(NEW.total_price_cents, 0)::numeric / 100),
+    'appointment_date', NEW.appointment_date,
+    'start_time', NEW.start_time,
+    'end_time', NEW.end_time,
+    'status', NEW.status,
+    'notes', NEW.notes,
+    'source', NEW.source,
+    'created_at', NEW.created_at,
+    'timestamp', timezone('utc'::text, now())
+  );
+
+  -- Disparo assíncrono não-bloqueante para a URL de produção do n8n
+  PERFORM net.http_post(
+    url := 'https://athrmnzs.app.n8n.cloud/webhook/agendamento',
+    headers := jsonb_build_object(
+      'Content-Type', 'application/json',
+      'Accept', 'application/json',
+      'User-Agent', 'Supabase-QGB-Webhook/2.0'
+    ),
+    body := v_payload::text
+  );
+
+  RETURN NEW;
+EXCEPTION
+  WHEN OTHERS THEN
+    -- Garante que se o n8n estiver indisponível, o agendamento no Supabase NÃO falha
+    RAISE WARNING 'Aviso: Falha ao notificar n8n webhook: %', SQLERRM;
+    RETURN NEW;
+END;
+$$ LANGUAGE plpgsql SECURITY DEFINER;
+
+-- Criação do Trigger na tabela appointments
+DROP TRIGGER IF EXISTS trigger_notify_n8n ON public.appointments;
+CREATE TRIGGER trigger_notify_n8n
+AFTER INSERT OR UPDATE ON public.appointments
+FOR EACH ROW EXECUTE PROCEDURE public.notify_n8n_on_appointment();
+
+-- ====================================================================
+-- 4. CONFIGURAÇÃO ALTERNATIVA: DATABASE WEBHOOKS NO PAINEL DO SUPABASE
+-- ====================================================================
+-- Caso prefira utilizar a interface visual nativa do Supabase (Database Webhooks):
 --
--- 1. No painel do Supabase, acesse:
---    Database > Webhooks > Create a new webhook
+-- 1. No painel do Supabase (https://supabase.com/dashboard/project/ctmedwnrjeistkgiualv):
+--    Acesse: Database > Webhooks > Create a new webhook
 --
--- 2. Configure os seguintes campos:
---    - Name: n8n_appointment_notification
+-- 2. Preencha com os dados exatos:
+--    - Name: n8n_agendamento
 --    - Table: public.appointments
 --    - Events: [x] Insert, [x] Update
 --    - Method: POST
---    - URL: https://seu-n8n.com/webhook/qgb-novo-agendamento
+--    - URL: https://athrmnzs.app.n8n.cloud/webhook/agendamento
 --    - HTTP Headers:
 --        Content-Type: application/json
---        x-webhook-secret: SEGREDO_CONFIGURADO_NO_N8N
 --
--- 3. No n8n, crie um workflow com nó 'Webhook':
---    - Path: /qgb-novo-agendamento
---    - Method: POST
---    - Extraia $json.record (contém customer_name, customer_phone, appointment_date, start_time, service_name, professional_name)
---    - Envie a mensagem formatada para a Evolution API / Z-API / WhatsApp oficial da Barbearia!
+-- 3. No seu workflow do n8n (https://athrmnzs.app.n8n.cloud):
+--    - Abra o nó Webhook "agendamento".
+--    - Garanta que o método HTTP esteja configurado como POST.
+--    - Clique no botão "Active" (alternar para ATIVO) no canto superior direito do editor do n8n.
+--    - Pronto! O workflow será acionado instantaneamente a cada novo agendamento.
