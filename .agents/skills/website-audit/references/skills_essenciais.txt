@@ -1,0 +1,339 @@
+GUIA DE SKILLS E USO DO PROMPT PARA RECRIAR E MELHORAR UM SITE NO ANTIGRAVITY
+================================================================================
+
+OBJETIVO
+-------
+Usar o Antigravity para analisar um site existente e recriá-lo com melhor design,
+responsividade e experiência do usuário, preservando integralmente os dados
+comerciais: serviços, preços, condições, valores, unidades e especificações.
+
+Princípio central:
+NÃO começar a implementação antes de mapear o site, extrair o conteúdo e verificar
+os dados comerciais. Não inventar informações ausentes nem alterar preços ou
+especificações sem autorização.
+
+PARTE 1 — SKILLS ESSENCIAIS
+===========================
+
+As skills podem estar disponíveis como skills instaláveis, instruções de projeto,
+regras ou arquivos de contexto. Os nomes abaixo são categorias recomendadas, não
+uma afirmação de que todas existam com esses nomes exatos no Antigravity. Se uma
+skill não estiver disponível, peça ao agente para seguir as instruções equivalentes.
+
+1. WEB RESEARCH / WEBSITE AUDIT
+   Finalidade:
+   - Navegar pelo site original e mapear páginas, rotas, links e seções.
+   - Identificar páginas inacessíveis, áreas restritas e limitações de navegação.
+   - Registrar a URL de origem de cada informação relevante.
+   Como usar:
+   - Execute primeiro a auditoria e o inventário de páginas.
+   - Peça que o agente indique o que realmente verificou e o que não conseguiu
+     acessar. Não permita que ele presuma que a página inicial representa o site todo.
+
+2. CONTENT EXTRACTION / INFORMATION ARCHITECTURE
+   Finalidade:
+   - Extrair textos, títulos, descrições, FAQs, tabelas, legendas, botões e links.
+   - Organizar o conteúdo por URL, página e seção.
+   Como usar:
+   - Gere um documento de conteúdo original antes de reescrever qualquer texto.
+   - Preserve a redação original em um campo e deixe possíveis melhorias em outro.
+   - Não resuma descrições de serviços que contenham detalhes relevantes.
+
+3. DATA INTEGRITY / FACT CHECKING
+   Finalidade:
+   - Conferir preços, descontos, moedas, unidades, quantidades, prazos e condições.
+   - Identificar dados divergentes entre páginas e informações não confirmadas.
+   Como usar:
+   - Crie um catálogo estruturado de todos os serviços, produtos, preços e condições.
+   - Registre a URL de origem e o contexto de cada valor.
+   - Use “não informado” quando o dado estiver ausente; nunca substitua por zero,
+     estimativa ou valor inventado.
+   - Faça uma comparação entre a fonte original e a versão recriada.
+
+4. FRONT-END DEVELOPMENT (HTML, CSS, JAVASCRIPT)
+   Finalidade:
+   - Implementar uma interface acessível, organizada, consistente e de fácil manutenção.
+   Como usar:
+   - Siga a tecnologia já utilizada pelo projeto quando isso for apropriado.
+   - Reutilize componentes para cabeçalho, rodapé, cartões, tabelas, botões e formulários.
+   - Separe conteúdo comercial de componentes visuais sempre que possível.
+   - Evite duplicar preços e descrições manualmente em várias páginas.
+
+5. RESPONSIVE WEB DESIGN / MOBILE-FIRST
+   Finalidade:
+   - Garantir que o site funcione em celulares, tablets, notebooks e monitores.
+   Como usar:
+   - Desenvolva primeiro para telas pequenas e amplie o layout progressivamente.
+   - Teste menus, tabelas, imagens, formulários, botões e elementos fixos.
+   - Corrija conteúdo cortado, sobreposições, rolagem horizontal indesejada e áreas
+     de toque pequenas.
+   - Não reduza tudo de tamanho: reorganize os componentes conforme a tela.
+
+6. UI/UX DESIGN
+   Finalidade:
+   - Melhorar hierarquia visual, legibilidade, navegação, consistência e conversão.
+   Como usar:
+   - Preserve a identidade da marca quando identificável.
+   - Crie uma hierarquia clara de títulos, descrições, preços e chamadas para ação.
+   - Não esconda condições, taxas, limitações ou detalhes importantes para deixar
+     o design visualmente mais limpo.
+   - Explique a justificativa das mudanças relevantes.
+
+7. ACCESSIBILITY / WCAG
+   Finalidade:
+   - Melhorar o acesso por teclado, leitores de tela, contraste e formulários.
+   Como usar:
+   - Use HTML semântico, rótulos explícitos, foco visível e textos alternativos úteis.
+   - Confira contraste e mensagens de erro.
+   - Não use apenas cor para comunicar estados ou erros.
+
+8. SEO TÉCNICO
+   Finalidade:
+   - Preservar e melhorar títulos, descrições, estrutura de cabeçalhos, links e indexação.
+   Como usar:
+   - Mantenha URLs importantes ou documente redirecionamentos necessários.
+   - Use títulos únicos, metadados apropriados e hierarquia semântica.
+   - Não introduza texto artificial ou palavras-chave que prejudiquem a clareza.
+
+9. PERFORMANCE / WEB VITALS
+   Finalidade:
+   - Reduzir carregamento desnecessário e melhorar a experiência em redes móveis.
+   Como usar:
+   - Otimize imagens, fontes e scripts.
+   - Utilize dimensões de imagem adequadas e carregamento tardio quando apropriado.
+   - Meça o desempenho quando houver ferramentas disponíveis; não invente resultados
+     de testes que não foram executados.
+
+10. FUNCTIONAL TESTING / QA
+    Finalidade:
+    - Verificar se páginas, links, botões, formulários e interações funcionam.
+    Como usar:
+    - Teste os fluxos importantes em diferentes tamanhos de tela.
+    - Registre cada teste como aprovado, reprovado ou não testado.
+    - Não declare que uma função funciona apenas porque o botão aparece.
+
+11. BROWSER AUTOMATION / PLAYWRIGHT (QUANDO DISPONÍVEL)
+    Finalidade:
+    - Automatizar testes de navegação, responsividade e interações.
+    Como usar:
+    - Use testes automatizados para rotas, links, formulários e erros de console.
+    - Combine testes automatizados com inspeção visual manual.
+    - Não tente contornar login, permissões ou controles de segurança.
+
+12. SEO, PRIVACIDADE E SEGURANÇA DE FORMULÁRIOS
+    Finalidade:
+    - Evitar exposição de dados, integrações inseguras e coleta excessiva.
+    Como usar:
+    - Não coloque chaves de API, senhas ou segredos no código do navegador.
+    - Identifique integrações externas e dados enviados por formulários.
+    - Preserve avisos de privacidade e consentimento aplicáveis.
+    - Não implemente pagamentos, autenticação ou armazenamento de dados sem requisitos claros.
+
+13. ASSET MANAGEMENT / MEDIA AUDIT
+    Finalidade:
+    - Catalogar logotipos, imagens, vídeos, PDFs, ícones e fontes.
+    Como usar:
+    - Registre origem, uso e página de cada ativo.
+    - Confira qualidade, proporção e comportamento responsivo.
+    - Não presuma que ativos de terceiros podem ser reutilizados legalmente.
+
+14. DOCUMENTATION / TRACEABILITY
+    Finalidade:
+    - Manter registros do que foi encontrado, implementado e validado.
+    Como usar:
+    - Mantenha inventário de páginas, catálogo comercial, lista de pendências e matriz
+      de rastreabilidade.
+    - Relacione cada dado comercial à sua URL de origem e ao local onde aparece no novo site.
+    - Atualize os documentos ao concluir cada etapa.
+
+PARTE 2 — COMO USAR O PROMPT NO ANTIGRAVITY
+===========================================
+
+ETAPA 1 — PREPARAR O PROJETO
+----------------------------
+1. Crie ou abra o projeto no Antigravity.
+2. Anexe este arquivo como contexto/instruções do projeto.
+3. Se houver suporte a regras persistentes ou arquivos de instrução do projeto,
+   coloque os princípios essenciais nesse arquivo também.
+4. Informe a URL do site original.
+5. Informe, se já souber, a tecnologia desejada, as integrações necessárias e onde
+   pretende hospedar o resultado.
+6. Não forneça senhas, tokens ou chaves secretas no prompt.
+
+ETAPA 2 — AUDITAR ANTES DE PROGRAMAR
+-----------------------------------
+Use o prompt de auditoria completo e peça para o agente trabalhar por etapas.
+A primeira tarefa deve ser somente descobrir e mapear o site, sem começar a
+reconstrução.
+
+Peça estes artefatos:
+- inventario_paginas.md
+- conteudo_original_por_pagina.md
+- catalogo_comercial.csv ou catalogo_comercial.md
+- inventario_funcionalidades.md
+- inventario_ativos.md
+- pendencias_e_divergencias.md
+
+Se o agente não puder criar arquivos, peça que apresente os resultados organizados
+na conversa ou em documentos que o ambiente permita gerar.
+
+ETAPA 3 — EXTRAIR E CONFERIR INFORMAÇÕES COMERCIAIS
+---------------------------------------------------
+Peça um registro individual para cada serviço/produto com, quando disponível:
+- ID único
+- nome exato
+- descrição original
+- preço e moeda
+- tipo de preço (fixo, inicial, promocional, sob consulta etc.)
+- unidade de cobrança
+- descontos e condições
+- especificações e unidades de medida
+- prazos e disponibilidade
+- inclusões, exclusões e restrições
+- garantias e políticas
+- URL de origem
+- status de verificação
+
+Compare os valores entre páginas. Não escolha arbitrariamente uma versão quando
+existirem divergências. Registre a divergência e solicite confirmação.
+
+ETAPA 4 — PLANEJAR A NOVA VERSÃO
+-------------------------------
+Só depois de mapear o conteúdo, solicite:
+- proposta de estrutura de páginas e navegação;
+- direção visual e sistema de design;
+- plano mobile-first;
+- componentes reutilizáveis;
+- estratégia para armazenar conteúdo e preços em uma fonte central;
+- melhorias de acessibilidade, SEO e desempenho;
+- plano de testes e critérios de aceitação.
+
+Peça que o agente explique quais mudanças são visuais e quais alteram conteúdo ou
+comportamento. Nenhuma mudança em preço, condição, especificação ou promessa
+comercial deve ser feita sem autorização.
+
+ETAPA 5 — IMPLEMENTAR EM FASES
+------------------------------
+Implemente uma etapa de cada vez:
+1. Estrutura e navegação.
+2. Componentes compartilhados.
+3. Páginas e conteúdo.
+4. Catálogo de serviços, preços e especificações.
+5. Formulários e integrações.
+6. Responsividade.
+7. SEO e acessibilidade.
+8. Otimização de desempenho.
+9. Testes e correções.
+
+Após cada fase, revise o resultado e mantenha o projeto executável. Evite mudanças
+grandes e não verificadas em muitas páginas de uma só vez.
+
+ETAPA 6 — TESTAR E COMPARAR
+---------------------------
+Teste, quando possível:
+- todas as rotas;
+- links internos e externos;
+- menus e botões;
+- formulários e validações;
+- tabelas e preços;
+- telas pequenas e grandes;
+- erros no console;
+- carregamento de imagens;
+- navegação por teclado;
+- estados de carregamento e erro.
+
+Compare o site recriado com o inventário original. Marque cada item como:
+- CONFIRMADO: conferido na fonte e preservado;
+- IMPLEMENTADO: reproduzido na nova versão;
+- PENDENTE: falta verificar ou implementar;
+- DIVERGENTE: existe diferença que exige análise;
+- INACESSÍVEL: não foi possível verificar na fonte.
+
+Não marque um item como confirmado apenas porque foi gerado pelo agente.
+
+ETAPA 7 — REVISÃO FINAL
+-----------------------
+Antes de considerar o trabalho concluído, exija:
+- lista de páginas implementadas;
+- lista de páginas ausentes;
+- comparação de todos os preços e condições;
+- conferência das especificações técnicas;
+- lista de funcionalidades testadas e seus resultados;
+- problemas conhecidos;
+- itens pendentes;
+- instruções para executar e publicar o projeto.
+
+PARTE 3 — PROMPT OPERACIONAL PARA COLAR NO ANTIGRAVITY
+======================================================
+
+Atue como uma equipe formada por especialista em auditoria de websites, UX/UI,
+engenheiro front-end, especialista em responsividade, SEO, acessibilidade, testes
+e integridade de dados comerciais.
+
+OBJETIVO:
+Recriar e melhorar o site [INSIRA A URL DO SITE], com visual moderno, ótima
+responsividade, navegação clara e manutenção simples, sem perder informações
+originais sobre serviços, produtos, preços, valores, especificações, condições,
+restrições, prazos ou garantias.
+
+REGRAS OBRIGATÓRIAS:
+1. Não comece a implementação antes de concluir o inventário e a extração do conteúdo.
+2. Não invente, arredonde, converta ou altere preços e especificações.
+3. Não substitua conteúdo detalhado por resumos que removam informações importantes.
+4. Registre a URL de origem das informações relevantes.
+5. Diferencie fatos observados, inferências e recomendações.
+6. Sinalize dados ausentes, divergentes ou inacessíveis.
+7. Preserve as condições comerciais e os avisos legais.
+8. Não declare que testes foram executados se não foram.
+9. Não tente contornar autenticação ou controles de acesso.
+10. Não exponha credenciais nem segredos no código.
+11. Reutilize componentes e mantenha os dados comerciais consistentes.
+12. Não altere o site original.
+
+FLUXO DE TRABALHO:
+Fase A: mapear todas as páginas e funcionalidades acessíveis.
+Fase B: extrair os textos e registrar todos os dados comerciais.
+Fase C: catalogar ativos, links e integrações.
+Fase D: auditar design, responsividade, SEO, acessibilidade e desempenho.
+Fase E: propor a arquitetura e as melhorias.
+Fase F: implementar por etapas.
+Fase G: testar e comparar a versão recriada com o inventário original.
+
+PRIMEIRA AÇÃO:
+Execute somente as Fases A e B. Ainda não comece a programar. Apresente o
+inventário de páginas, o conteúdo organizado por página, o catálogo de serviços,
+preços e especificações, e uma lista de informações não verificadas. Informe as
+limitações de acesso encontradas.
+
+Depois de eu revisar e aprovar esses documentos, prossiga para a fase seguinte.
+Não trate a auditoria como concluída enquanto houver páginas relevantes não
+verificadas.
+
+PARTE 4 — CHECKLIST RÁPIDO
+==========================
+
+[ ] Informei a URL correta.
+[ ] O agente mapeou páginas secundárias, não apenas a página inicial.
+[ ] O conteúdo original foi registrado antes de ser reescrito.
+[ ] Todos os serviços e produtos foram catalogados.
+[ ] Todos os preços, moedas, descontos e condições foram conferidos.
+[ ] As especificações e unidades de medida foram preservadas.
+[ ] Divergências e informações ausentes foram sinalizadas.
+[ ] O plano visual e responsivo foi aprovado antes da implementação.
+[ ] A nova versão foi testada em vários tamanhos de tela.
+[ ] Links, botões, formulários e funcionalidades foram testados.
+[ ] Existe uma matriz de rastreabilidade entre fonte original e nova versão.
+[ ] As pendências foram documentadas.
+[ ] O projeto pode ser executado e as instruções estão registradas.
+
+RESULTADO ESPERADO
+==================
+
+Uma recriação de maior qualidade visual e técnica, responsiva e fácil de manter,
+com conteúdo rastreável, funcionalidades verificadas e preservação dos dados
+comerciais e das especificações originais.
+
+Importante: a qualidade do resultado depende do acesso real ao site, da capacidade
+de navegação e inspeção do Antigravity e da revisão humana das informações críticas.
+Este guia reduz o risco de omissões, mas não substitui a conferência final de preços,
+condições e especificações.

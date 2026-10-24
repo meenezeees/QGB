@@ -1,0 +1,5 @@
+# Robots.txt - QG Barber
+User-agent: *
+Allow: /
+
+Sitemap: https://qgbarber.ai.studio/sitemap.xml
