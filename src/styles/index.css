@@ -1,0 +1,108 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --color-midnight: #000020;
+  --color-ametista-escura: #480355;
+  --color-ametista: #9448ac;
+  --color-slate-grey: #6a6a70;
+  --color-text-accessible: #45454C;
+}
+
+@layer base {
+  html {
+    scroll-behavior: smooth;
+    color: #000020;
+  }
+
+  body {
+    overflow-x: hidden;
+  }
+
+  /* Accessible focus indicators for keyboard navigation */
+  a:focus-visible,
+  button:focus-visible,
+  input:focus-visible,
+  select:focus-visible,
+  textarea:focus-visible {
+    outline: 2px solid #9448AC;
+    outline-offset: 2px;
+  }
+}
+
+/* Modern Web Guidance: Dialog Backdrop Styling */
+dialog::backdrop {
+  background-color: rgba(0, 0, 32, 0.75);
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
+}
+
+/* Custom Scrollbar */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: #F8F7FA;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #9448AC;
+  border-radius: 9999px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #480355;
+}
+
+/* Glassmorphism and Luxury Glow utilities */
+.glass-panel {
+  background: rgba(255, 255, 255, 0.85);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid rgba(148, 72, 172, 0.12);
+}
+
+.glass-panel-dark {
+  background: rgba(16, 16, 38, 0.85);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid rgba(148, 72, 172, 0.25);
+}
+
+.glow-ametista {
+  box-shadow: 0 0 25px rgba(148, 72, 172, 0.35);
+}
+
+.glow-ametista-lg {
+  box-shadow: 0 0 45px rgba(148, 72, 172, 0.45);
+}
+
+/* Shimmer animation for loading states */
+@keyframes shimmer {
+  100% {
+    transform: translateX(100%);
+  }
+}
+
+.animate-shimmer {
+  position: relative;
+  overflow: hidden;
+}
+
+.animate-shimmer::after {
+  position: absolute;
+  top: 0; right: 0; bottom: 0; left: 0;
+  transform: translateX(-100%);
+  background-image: linear-gradient(
+    90deg,
+    rgba(255, 255, 255, 0) 0,
+    rgba(255, 255, 255, 0.2) 20%,
+    rgba(255, 255, 255, 0.5) 60%,
+    rgba(255, 255, 255, 0)
+  );
+  animation: shimmer 2s infinite;
+  content: '';
+}
