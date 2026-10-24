@@ -17,10 +17,14 @@ import { BarberDashboard } from './components/panels/BarberDashboard';
 import { AdminDashboard } from './components/panels/AdminDashboard';
 import { ToastContainer, ToastMessage } from './components/common/Toast';
 import { MobileFloatingCTA } from './components/common/MobileFloatingCTA';
+import { CinematicIntro } from './components/common/CinematicIntro';
 import { ServiceItem, BarberItem, ProductItem, Appointment, UserRole } from './types';
 import { SETTINGS, BARBERS, SERVICES } from './data/barbershop.data';
 
 export const App: React.FC = () => {
+  // Cinematic Video Intro State (runs on initial site entry)
+  const [showIntro, setShowIntro] = useState(true);
+
   // Navigation & View State
   const [activeView, setActiveView] = useState<'home' | 'client' | 'barber' | 'admin'>('home');
   const [currentRole, setCurrentRole] = useState<UserRole | null>(null);
@@ -161,6 +165,11 @@ export const App: React.FC = () => {
   return (
     <div className="min-h-screen bg-[#F8F7FA] dark:bg-[#000020] text-[#000020] dark:text-white flex flex-col justify-between selection:bg-[#9448AC] selection:text-white overflow-x-hidden relative">
       
+      {/* Cinematic Video Introduction with Theatrical Curtain Reveal */}
+      {showIntro && (
+        <CinematicIntro onComplete={() => setShowIntro(false)} />
+      )}
+
       {/* Navigation */}
       <Navbar
         onOpenBooking={() => handleOpenBooking()}
